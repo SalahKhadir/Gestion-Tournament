@@ -1,0 +1,3 @@
+C:/Users/salah/Desktop/All/Studies/PROGRAMMATION ORIENTEE OBJET/gestionTournoi/cmake-build-debug/CMakeFiles/gestionTournoi.dir
+C:/Users/salah/Desktop/All/Studies/PROGRAMMATION ORIENTEE OBJET/gestionTournoi/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/salah/Desktop/All/Studies/PROGRAMMATION ORIENTEE OBJET/gestionTournoi/cmake-build-debug/CMakeFiles/rebuild_cache.dir
