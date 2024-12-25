@@ -13,7 +13,7 @@ using namespace std;
 // Menus d'affichage
 void afficherMenuPrincipal() {
     cout << "\n====== GESTION DU TOURNOI DE FOOTBALL ======" << endl;
-    cout << "1. Gestion des équipes" << endl;
+    cout << "1. Gestion des equipes" << endl;
     cout << "2. Gestion des arbitres" << endl;
     cout << "3. Gestion des terrains" << endl;
     cout << "4. Gestion des matchs" << endl;
@@ -24,11 +24,11 @@ void afficherMenuPrincipal() {
 }
 
 void afficherMenuEquipe() {
-    cout << "\n====== GESTION DES ÉQUIPES ======" << endl;
-    cout << "1. Ajouter une équipe" << endl;
-    cout << "2. Afficher les équipes" << endl;
-    cout << "3. Modifier une équipe" << endl;
-    cout << "4. Rechercher une équipe" << endl;
+    cout << "\n====== GESTION DES EQUIPES ======" << endl;
+    cout << "1. Ajouter une equipe" << endl;
+    cout << "2. Afficher les equipes" << endl;
+    cout << "3. Modifier une equipe" << endl;
+    cout << "4. Rechercher une equipe" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
 }
@@ -55,7 +55,7 @@ void afficherMenuMatch() {
     cout << "\n====== GESTION DES MATCHS ======" << endl;
     cout << "1. Créer un match" << endl;
     cout << "2. Afficher les matchs" << endl;
-    cout << "3. Enregistrer un résultat" << endl;
+    cout << "3. Enregistrer un resultat" << endl;
     cout << "4. Attribution des arbitres" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
