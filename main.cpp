@@ -27,8 +27,7 @@ void afficherMenuEquipe() {
     cout << "\n====== GESTION DES EQUIPES ======" << endl;
     cout << "1. Ajouter une equipe" << endl;
     cout << "2. Afficher les equipes" << endl;
-    cout << "3. Modifier une equipe" << endl;
-    cout << "4. Rechercher une equipe" << endl;
+    cout << "3. Rechercher une equipe" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
 }
@@ -106,11 +105,24 @@ void gererEquipes(vector<Equipe>& equipes) {
                 break;
             }
             case 3: {
-                // Modification d'équipe
-                break;
-            }
-            case 4: {
-                // Recherche d'équipe
+                string critere, valeur;
+                cout << "Rechercher par (id/nom/ville/score/classement): ";
+                cin >> critere;
+                cout << "Entrez la valeur du critère: ";
+                cin.ignore();
+                getline(cin, valeur);
+
+                bool found = false;
+                for (auto& equipe : equipes) {
+                    if (!equipe.rechercheEquipe(critere, valeur).getNomEquipe().empty()) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    cout << "Aucune équipe trouvée avec ce critère." << endl;
+                }
                 break;
             }
         }

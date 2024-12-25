@@ -33,7 +33,7 @@ public:
 
     // Méthodes
     void consultationEquipe() const;
-    static Equipe rechercheEquipe(const std::string& critere);
+    Equipe rechercheEquipe(const std::string &critere, const std::string &valeur);
 };
 
 #endif // EQUIPE_H
