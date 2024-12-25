@@ -6,6 +6,8 @@
 #include "Billet.h"
 #include "Spectateur.h"
 #include <iostream>
+#include <algorithm>
+#include <limits>
 #include <vector>
 #include <string>
 using namespace std;
@@ -116,8 +118,8 @@ void gererEquipes(vector<Equipe>& equipes) {
                 for (auto& equipe : equipes) {
                     if (!equipe.rechercheEquipe(critere, valeur).getNomEquipe().empty()) {
                         found = true;
-                        break;
                     }
+                    cout << "------------------------" << endl;
                 }
 
                 if (!found) {
@@ -134,18 +136,161 @@ void gererArbitres(vector<Arbitre>& arbitres) {
     do {
         afficherMenuArbitre();
         cin >> choix;
-        // Implémentation similaire à gererEquipes
+
+        // Vérifie si une erreur s'est produite lors de la saisie
+        if (cin.fail()) {
+            cin.clear(); // Réinitialise le flux en cas d'erreur
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore les caractères restants
+            cout << "Entrée invalide. Veuillez réessayer." << endl;
+            continue; // Retourne au début de la boucle
+        }
+
+        switch (choix) {
+            case 1: {
+                int code;
+                string nom;
+                cout << "Code de l'arbitre: ";
+                cin >> code;
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                cout << "Nom de l'arbitre: ";
+                getline(cin, nom);
+                arbitres.emplace_back(code, nom);
+                cout << "Arbitre ajouté avec succès!" << endl;
+                break;
+            }
+            case 2: { // Afficher les arbitres
+                if (arbitres.empty()) {
+                    cout << "Aucun arbitre enregistré." << endl;
+                } else {
+                    for (const auto& arbitre : arbitres) {
+                        arbitre.afficherArbitre();
+                        cout << "------------------------" << endl;
+                    }
+                }
+                break;
+            }
+            case 3: { // Ajouter une décision arbitrale
+                int code;
+                string decision;
+                cout << "Code de l'arbitre (pour ajouter une décision): ";
+                cin >> code;
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                auto it = find_if(arbitres.begin(), arbitres.end(), [code](const Arbitre& arb) {
+                    return arb.getCodeArbitre() == code;
+                });
+
+                if (it != arbitres.end()) {
+                    cout << "Entrez la décision: ";
+                    getline(cin, decision); // Lecture de la décision
+                    it->ajouterDecision(decision);
+                    cout << "Décision ajoutée avec succès!" << endl;
+                } else {
+                    cout << "Arbitre introuvable." << endl;
+                }
+                break;
+            }
+            case 0: // Retour
+                cout << "Retour au menu principal." << endl;
+                break;
+            default:
+                cout << "Choix invalide. Veuillez réessayer." << endl;
+        }
     } while (choix != 0);
 }
+
 
 void gererTerrains(vector<Terrain>& terrains) {
     int choix;
     do {
         afficherMenuTerrain();
         cin >> choix;
-        // Implémentation de la gestion des terrains
+
+        // Vérifie si une erreur s'est produite lors de la saisie
+        if (cin.fail()) {
+            cin.clear(); // Réinitialise le flux en cas d'erreur
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore les caractères restants
+            cout << "Entrée invalide. Veuillez réessayer." << endl;
+            continue; // Retourne au début de la boucle
+        }
+
+        switch (choix) {
+            case 1: { // Ajouter un terrain
+                int id, capacite;
+                string nom, ville, proprietaire;
+
+                cout << "ID du terrain: ";
+                cin >> id;
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
+                cout << "Nom du terrain: ";
+                getline(cin, nom);
+
+                cout << "Ville: ";
+                getline(cin, ville);
+
+                cout << "Propriétaire (équipe): ";
+                getline(cin, proprietaire);
+
+                cout << "Capacité du terrain: ";
+                cin >> capacite;
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
+                terrains.emplace_back(id, nom, ville, proprietaire, capacite);
+                cout << "Terrain ajouté avec succès!" << endl;
+                break;
+            }
+            case 2: { // Afficher les terrains
+                if (terrains.empty()) {
+                    cout << "Aucun terrain enregistré." << endl;
+                } else {
+                    for (const auto& terrain : terrains) {
+                        terrain.AfficherTerrain();
+                        cout << "------------------------" << endl;
+                    }
+                }
+                break;
+            }
+            case 3: { // Rechercher un terrain
+                string critere, valeur;
+                cout << "Rechercher par (id/nom/ville/proprietaire/capacite): ";
+                cin >> critere;
+
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
+                cout << "Entrez la valeur du critère: ";
+                getline(cin, valeur);
+
+                bool found = false;
+
+                for (const auto& terrain : terrains) {
+                    if ((critere == "id" && to_string(terrain.getIdTerrain()) == valeur) ||
+                        (critere == "nom" && terrain.getNomTerrain() == valeur) ||
+                        (critere == "ville" && terrain.getVilleTerrain() == valeur) ||
+                        (critere == "proprietaire" && terrain.getEquipePropritere() == valeur) ||
+                        (critere == "capacite" && to_string(terrain.getCapaciteTerrain()) == valeur)) {
+                        terrain.AfficherTerrain();
+                        found = true; // Indique qu'au moins un terrain a été trouvé
+                        }
+                    cout << "------------------------" << endl;
+                }
+
+                if (!found) {
+                    cout << "Aucun terrain trouvé avec ce critère." << endl;
+                }
+                break;
+            }
+            case 0: // Retour
+                cout << "Retour au menu principal." << endl;
+                break;
+            default:
+                cout << "Choix invalide. Veuillez réessayer." << endl;
+        }
     } while (choix != 0);
 }
+
 
 void gererMatchs(vector<Match>& matchs, vector<Equipe>& equipes,
                 vector<Arbitre>& arbitres, vector<Terrain>& terrains) {
