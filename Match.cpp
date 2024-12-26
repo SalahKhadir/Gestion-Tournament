@@ -1,8 +1,8 @@
 #include "Match.h"
 
-Match::Match() : refMatch(0), phase(PHASE_GROUPES), terrain(0) {}
+Match::Match() : refMatch(0), phase(PHASE_GROUPES), terrain(0), nomTerrain("") {}
 
-Match::Match(int ref, Phase p) : refMatch(ref), phase(p), terrain(0) {}
+Match::Match(int ref, Phase p) : refMatch(ref), phase(p), terrain(0), nomTerrain("") {}
 
 int Match::getRefMatch() const { return refMatch; }
 void Match::setRefMatch(int ref) { refMatch = ref; }
@@ -14,6 +14,8 @@ vector<Arbitre> Match::getArbitres() const { return arbitres; }
 void Match::ajouterArbitre(const Arbitre& arbitre) { arbitres.push_back(arbitre); }
 int Match::getTerrain() const { return terrain; }
 void Match::setTerrain(int terrainId) { terrain = terrainId; }
+string Match::getTerrainNom() const {return nomTerrain;}
+void Match::setTerrainNom(string NomTerrain) {nomTerrain = NomTerrain;}
 vector<Spectateur> Match::getSpectateurs() const { return spectateurs; }
 void Match::ajouterSpectateur(const Spectateur& spectateur) { spectateurs.push_back(spectateur); }
 

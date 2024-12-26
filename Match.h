@@ -22,7 +22,8 @@ private:
     Phase phase;
     vector<Equipe> equipes;
     vector<Arbitre> arbitres;
-    int terrain;  // référence au Terrain
+    int terrain;
+    string nomTerrain;
     vector<Spectateur> spectateurs;
 
 public:
@@ -40,6 +41,8 @@ public:
     void ajouterArbitre(const Arbitre& arbitre);
     int getTerrain() const;
     void setTerrain(int terrainId);
+    string getTerrainNom() const;
+    void setTerrainNom(string NomTerrain);
     vector<Spectateur> getSpectateurs() const;
     void ajouterSpectateur(const Spectateur& spectateur);
 
@@ -47,6 +50,7 @@ public:
     void attributionMatchs();
     void selectionEquipes();
     bool verificationDisponibilite() const;
+
 };
 
 #endif

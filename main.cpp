@@ -57,7 +57,6 @@ void afficherMenuMatch() {
     cout << "1. Créer un match" << endl;
     cout << "2. Afficher les matchs" << endl;
     cout << "3. Enregistrer un resultat" << endl;
-    cout << "4. Attribution des arbitres" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
 }
@@ -293,14 +292,156 @@ void gererTerrains(vector<Terrain>& terrains) {
 
 
 void gererMatchs(vector<Match>& matchs, vector<Equipe>& equipes,
-                vector<Arbitre>& arbitres, vector<Terrain>& terrains) {
+                 vector<Arbitre>& arbitres, vector<Terrain>& terrains) {
     int choix;
     do {
         afficherMenuMatch();
         cin >> choix;
-        // Implémentation de la gestion des matchs
+
+        switch (choix) {
+        case 1: { // Créer un match
+            cout << "\nCréation d'un nouveau match...\n";
+            Match match;
+            int ref, phaseInput;
+
+            // Référence du match
+            cout << "Référence du match: ";
+            cin >> ref;
+            match.setRefMatch(ref);
+
+            // Phase du match
+            cout << "Phase du match :\n";
+            cout << "0. PHASE_GROUPES\n1. ELIMINATOIRES\n2. QUARTS_FINALE\n3. DEMI_FINALE\n4. FINALE\n";
+            cout << "Entrez le numéro correspondant : ";
+            cin >> phaseInput;
+            if (phaseInput < 0 || phaseInput > 4) {
+                cout << "Phase invalide. Annulation de la création du match.\n";
+                break;
+            }
+            match.setPhase(static_cast<Phase>(phaseInput));
+
+            // Sélectionner les équipes
+            if (equipes.size() < 2) {
+                cout << "Nombre insuffisant d'équipes pour organiser un match.\n";
+                break;
+            }
+            cout << "Sélection des équipes...\n";
+            for (size_t i = 0; i < equipes.size(); ++i) {
+                cout << i + 1 << ". " << equipes[i].getNomEquipe() << endl;
+            }
+            int equipe1Idx, equipe2Idx;
+            cout << "Choisissez l'indice de la première équipe: ";
+            cin >> equipe1Idx;
+            cout << "Choisissez l'indice de la deuxième équipe: ";
+            cin >> equipe2Idx;
+
+            if (equipe1Idx < 1 || equipe1Idx > equipes.size() ||
+                equipe2Idx < 1 || equipe2Idx > equipes.size() ||
+                equipe1Idx == equipe2Idx) {
+                cout << "Indices d'équipes invalides. Annulation de la création du match.\n";
+                break;
+            }
+
+            match.ajouterEquipe(equipes[equipe1Idx - 1]);
+            match.ajouterEquipe(equipes[equipe2Idx - 1]);
+
+            // Sélectionner le terrain
+            if (terrains.empty()) {
+                cout << "Aucun terrain disponible.\n";
+                break;
+            }
+            cout << "Sélection d'un terrain...\n";
+            for (size_t i = 0; i < terrains.size(); ++i) {
+                cout << i + 1 << ". " << terrains[i].getNomTerrain()
+                     << " (" << terrains[i].getVilleTerrain() << ")" << endl;
+            }
+            int terrainIdx;
+            cout << "Choisissez l'indice du terrain: ";
+            cin >> terrainIdx;
+
+            if (terrainIdx < 1 || terrainIdx > terrains.size()) {
+                cout << "Indice de terrain invalide. Annulation de la création du match.\n";
+                break;
+            }
+
+            match.setTerrain(terrains[terrainIdx - 1].getIdTerrain());
+            match.setTerrainNom(terrains[terrainIdx - 1].getNomTerrain());
+
+            // Sélectionner les arbitres
+            if (arbitres.size() < 2) {
+                cout << "Nombre insuffisant d'arbitres disponibles.\n";
+                break;
+            }
+            cout << "Sélection des arbitres...\n";
+            for (size_t i = 0; i < arbitres.size(); ++i) {
+                cout << i + 1 << ". " << arbitres[i].getNomArbitre() << endl;
+            }
+            int arbitre1Idx, arbitre2Idx;
+            cout << "Choisissez l'indice du premier arbitre: ";
+            cin >> arbitre1Idx;
+            cout << "Choisissez l'indice du deuxième arbitre: ";
+            cin >> arbitre2Idx;
+
+            if (arbitre1Idx < 1 || arbitre1Idx > arbitres.size() ||
+                arbitre2Idx < 1 || arbitre2Idx > arbitres.size() ||
+                arbitre1Idx == arbitre2Idx) {
+                cout << "Indices d'arbitres invalides. Annulation de la création du match.\n";
+                break;
+            }
+
+            match.ajouterArbitre(arbitres[arbitre1Idx - 1]);
+            match.ajouterArbitre(arbitres[arbitre2Idx - 1]);
+
+            // Ajouter le match à la liste des matchs
+            matchs.push_back(match);
+            cout << "Match créé avec succès !\n";
+            break;
+        }
+        case 2: { // Afficher les matchs
+            cout << "\nListe des matchs:\n";
+            if (matchs.empty()) {
+                cout << "Aucun match à afficher.\n";
+                break;
+            }
+            for (const auto& match : matchs) {
+                cout << "Référence: " << match.getRefMatch()
+                     << ", Phase: ";
+                switch (match.getPhase()) {
+                    case PHASE_GROUPES:
+                        cout << "Phase de Groupes";
+                    break;
+                    case ELIMINATOIRES:
+                        cout << "Éliminatoires";
+                    break;
+                    case QUARTS_FINALE:
+                        cout << "Quarts de Finale";
+                    break;
+                    case DEMI_FINALE:
+                        cout << "Demi-Finale";
+                    break;
+                    case FINALE:
+                        cout << "Finale";
+                    break;
+                    default:
+                        cout << "Phase inconnue";
+                    break;
+                }
+                     cout << ", Équipes: ";
+                for (const auto& equipe : match.getEquipes()) {
+                    cout << equipe.getNomEquipe() << " x ";
+                }
+                cout << ", Terrain: " << match.getTerrainNom() << endl;
+            }
+            break;
+        }
+        default:
+            if (choix != 0) {
+                cout << "Choix invalide. Réessayez.\n";
+            }
+        }
     } while (choix != 0);
 }
+
 
 void gererSpectateurs(vector<Spectateur>& spectateurs, vector<Match>& matchs,
                      vector<Zone>& zones) {
