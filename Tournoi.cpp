@@ -48,6 +48,13 @@ bool Tournoi::peutCommencer() const {
         cout << "Il faut au moins 2 équipes pour commencer le tournoi." << endl;
         return false;
     }
+    for (const auto& equipe : equipes) {
+        if (equipe.getNombreJoueur() < 20) {
+            cout << "L'équipe " << equipe.getNomEquipe()
+                 << " n'a pas le minimum requis de 20 joueurs." << endl;
+            return false;
+        }
+    }
     if (arbitres.empty()) {
         cout << "Il faut au moins un arbitre pour commencer le tournoi." << endl;
         return false;
@@ -66,6 +73,11 @@ bool Tournoi::peutCommencer() const {
 void Tournoi::ajouterEquipe(const Equipe& equipe) {
     if (equipes.size() >= nombreEquipesMax) {
         cout << "Nombre maximum d'équipes atteint (" << nombreEquipesMax << " équipes)." << endl;
+        return;
+    }
+
+    if (equipe.getNombreJoueur() < 20) {
+        cout << "L'équipe doit avoir au minimum 20 joueurs. Équipe non ajoutée." << endl;
         return;
     }
 
@@ -102,17 +114,6 @@ Equipe* Tournoi::rechercherEquipe(const string& critere, const string& valeur) {
         }
     }
     return nullptr;
-}
-
-void Tournoi::mettreAJourClassement() {
-    sort(equipes.begin(), equipes.end(),
-         [](const Equipe& a, const Equipe& b) {
-             return a.getScore() > b.getScore();
-         });
-
-    for (size_t i = 0; i < equipes.size(); ++i) {
-        equipes[i].setClassement(i + 1);
-    }
 }
 
 void Tournoi::ajouterArbitre(const Arbitre& arbitre) {
@@ -254,17 +255,77 @@ void Tournoi::enregistrerResultatMatch(int refMatch, int score1, int score2) {
 
     match->enregistrerScore(score1, score2);
     match->setTermine(true);
+
+    // Récupérer les équipes du match
+    vector<Equipe> equipesMatch = match->getEquipes();
+    if (equipesMatch.size() != 2) {
+        cout << "Erreur: nombre incorrect d'équipes pour le match." << endl;
+        return;
+    }
+
+    // Chercher les équipes dans le vecteur principal pour pouvoir modifier leurs scores
+    Equipe* equipe1 = rechercherEquipe("id", to_string(equipesMatch[0].getIdEquipe()));
+    Equipe* equipe2 = rechercherEquipe("id", to_string(equipesMatch[1].getIdEquipe()));
+
+    if (!equipe1 || !equipe2) {
+        cout << "Erreur: équipes non trouvées." << endl;
+        return;
+    }
+
+    // Mettre à jour les scores selon le résultat
+    if (score1 > score2) {
+        // Équipe 1 gagne
+        equipe1->setScore(equipe1->getScore() + 3);
+        cout << equipe1->getNomEquipe() << " gagne 3 points" << endl;
+    }
+    else if (score2 > score1) {
+        // Équipe 2 gagne
+        equipe2->setScore(equipe2->getScore() + 3);
+        cout << equipe2->getNomEquipe() << " gagne 3 points" << endl;
+    }
+    else {
+        // Match nul
+        equipe1->setScore(equipe1->getScore() + 1);
+        equipe2->setScore(equipe2->getScore() + 1);
+        cout << "Match nul - Chaque équipe gagne 1 point" << endl;
+    }
+
+    // Mettre à jour le classement
     mettreAJourClassement();
+
     cout << "Résultat enregistré avec succès!" << endl;
+    cout << "\nClassement mis à jour:" << endl;
+    afficherClassement();
 }
 
-Match* Tournoi::rechercherMatch(int refMatch) {
-    for (auto match : matchs) {
-        if (match->getRefMatch() == refMatch) {
-            return match;
-        }
+void Tournoi::mettreAJourClassement() {
+    // Trier les équipes par score
+    sort(equipes.begin(), equipes.end(),
+         [](const Equipe& a, const Equipe& b) {
+             return a.getScore() > b.getScore();
+         });
+
+    // Mettre à jour le rang de chaque équipe
+    for (size_t i = 0; i < equipes.size(); ++i) {
+        equipes[i].setClassement(i + 1);
     }
-    return nullptr;
+}
+
+void Tournoi::afficherClassement() const {
+    if (equipes.empty()) {
+        cout << "Aucune équipe inscrite." << endl;
+        return;
+    }
+
+    cout << "\n=== Classement du Tournoi ===" << endl;
+    cout << "Rang\tÉquipe\t\tPoints" << endl;
+    cout << "--------------------------------" << endl;
+    for (const auto& equipe : equipes) {
+        cout << equipe.getClassement() << "\t"
+             << equipe.getNomEquipe() << "\t\t"
+             << equipe.getScore() << " pts" << endl;
+    }
+    cout << "--------------------------------" << endl;
 }
 void Tournoi::planifierPhaseGroupe() {
     if (!peutCommencer()) return;
@@ -362,24 +423,4 @@ void Tournoi::genererCalendrier() {
     planifierPhaseEliminatoire();
 
     cout << "\n=== Le tournoi est prêt à commencer! ===" << endl;
-}
-void Tournoi::afficherClassement() const {
-    if (equipes.empty()) {
-        cout << "Aucune équipe inscrite." << endl;
-        return;
-    }
-
-    vector<Equipe> classement = equipes;
-    sort(classement.begin(), classement.end(),
-         [](const Equipe& a, const Equipe& b) {
-             return a.getScore() > b.getScore();
-         });
-
-    cout << "\n=== Classement du Tournoi ===" << endl;
-    int rang = 1;
-    for (const auto& equipe : classement) {
-        cout << rang << ". " << equipe.getNomEquipe()
-             << " - " << equipe.getScore() << " points" << endl;
-        rang++;
-    }
 }
