@@ -4,28 +4,26 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 class Arbitre {
 private:
     int codeArbitre;
-    std::string nomArbitre;
-    std::vector<std::string> decisionsArbitre;
+    string nomArbitre;
+    vector<string> decisionsArbitre;
 
 public:
-    // Constructeurs
     Arbitre();
-    Arbitre(int code, const std::string& nom);
+    Arbitre(int code, const string& nom);
 
-    // Getters & Setters
     int getCodeArbitre() const;
     void setCodeArbitre(int code);
-    std::string getNomArbitre() const;
-    void setNomArbitre(const std::string& nom);
-    std::vector<std::string> getDecisionsArbitre() const;
-    void ajouterDecision(const std::string& decision);
+    string getNomArbitre() const;
+    void setNomArbitre(const string& nom);
+    vector<string> getDecisionsArbitre() const;
+    void ajouterDecision(const string& decision);
 
-    // Méthodes
     void afficherArbitre() const;
 };
 
-
-#endif //ARBITRE_H
+#endif

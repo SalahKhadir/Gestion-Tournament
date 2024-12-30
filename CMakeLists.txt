@@ -3,11 +3,10 @@ project(gestionTournoi)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(gestionTournoi main.cpp
-        Arbitre.h
+add_executable(gestionTournoi
+        main.cpp
         Arbitre.cpp
-        Equipe.h
         Equipe.cpp
         Terrain.cpp
         Match.cpp
-        )
+        Tournoi.cpp)

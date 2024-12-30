@@ -2,6 +2,7 @@
 #define TERRAIN_H
 
 #include <string>
+#include <vector>
 using namespace std;
 
 class Terrain {
@@ -30,7 +31,7 @@ public:
 
     // Méthodes
     void AfficherTerrain() const;
-    void RechercheTerrain();
+    void RechercheTerrain(const vector<Terrain>& terrains);
 };
 
 #endif

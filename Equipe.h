@@ -1,40 +1,39 @@
+// Equipe.h
 #ifndef EQUIPE_H
 #define EQUIPE_H
 
 #include <string>
 
+using namespace std;
+
 class Equipe {
 private:
     int idEquipe;
-    std::string nomEquipe;
+    string nomEquipe;
     int nombreJoueur;
-    std::string villeEquipe;
+    string villeEquipe;
     float score;
     int classement;
 
 public:
-    // Constructeurs
     Equipe();
-    Equipe(int id, const std::string& nom, int nbJoueurs, const std::string& ville);
+    Equipe(int id, const string& nom, int nbJoueurs, const string& ville);
 
-    // Getters & Setters
     int getIdEquipe() const;
     void setIdEquipe(int id);
-    std::string getNomEquipe() const;
-    void setNomEquipe(const std::string& nom);
+    string getNomEquipe() const;
+    void setNomEquipe(const string& nom);
     int getNombreJoueur() const;
     void setNombreJoueur(int nb);
-    std::string getVilleEquipe() const;
-    void setVilleEquipe(const std::string& ville);
+    string getVilleEquipe() const;
+    void setVilleEquipe(const string& ville);
     float getScore() const;
     void setScore(float s);
     int getClassement() const;
     void setClassement(int c);
 
-    // Méthodes
     void consultationEquipe() const;
-    Equipe rechercheEquipe(const std::string &critere, const std::string &valeur);
+    Equipe rechercheEquipe(const string& critere, const string& valeur);
 };
 
-#endif // EQUIPE_H
-
+#endif

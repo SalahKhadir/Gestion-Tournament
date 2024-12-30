@@ -1,5 +1,6 @@
 #include "Terrain.h"
 #include <iostream>
+#include <limits>
 
 Terrain::Terrain()
     : idTerrain(0), nomTerrain(""), villeTerrain(""),
@@ -28,6 +29,30 @@ void Terrain::AfficherTerrain() const {
     cout << "Capacite: " << capaciteTerrain << endl;
 }
 
-void Terrain::RechercheTerrain() {
-    // À implémenter selon les besoins spécifiques
+void Terrain::RechercheTerrain(const vector<Terrain>& terrains) {
+    string critere, valeur;
+    cout << "Rechercher par (id/nom/ville/proprietaire/capacite): ";
+    cin >> critere;
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
+    cout << "Entrez la valeur du critere: ";
+    getline(cin, valeur);
+
+    bool found = false;
+
+    for (const auto& terrain : terrains) {
+        if ((critere == "id" && to_string(terrain.getIdTerrain()) == valeur) ||
+            (critere == "nom" && terrain.getNomTerrain() == valeur) ||
+            (critere == "ville" && terrain.getVilleTerrain() == valeur) ||
+            (critere == "proprietaire" && terrain.getEquipePropritere() == valeur) ||
+            (critere == "capacite" && to_string(terrain.getCapaciteTerrain()) == valeur)) {
+            terrain.AfficherTerrain();
+            found = true; // Indique qu'au moins un terrain a été trouvé
+            cout << "------------------------" << endl;
+            }
+    }
+
+    if (!found) {
+        cout << "Aucun terrain trouvé avec ce critère." << endl;
+    }
 }

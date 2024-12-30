@@ -79,6 +79,12 @@ build CMakeFiles/gestionTournoi.dir/Match.cpp.obj: CXX_COMPILER__gestionTournoi_
   OBJECT_DIR = CMakeFiles\gestionTournoi.dir
   OBJECT_FILE_DIR = CMakeFiles\gestionTournoi.dir
 
+build CMakeFiles/gestionTournoi.dir/Tournoi.cpp.obj: CXX_COMPILER__gestionTournoi_unscanned_Debug C$:/Users/salah/Desktop/All/Studies/PROGRAMMATION$ ORIENTEE$ OBJET/gestionTournoi/Tournoi.cpp || cmake_object_order_depends_target_gestionTournoi
+  DEP_FILE = CMakeFiles\gestionTournoi.dir\Tournoi.cpp.obj.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\gestionTournoi.dir
+  OBJECT_FILE_DIR = CMakeFiles\gestionTournoi.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target gestionTournoi
@@ -87,7 +93,7 @@ build CMakeFiles/gestionTournoi.dir/Match.cpp.obj: CXX_COMPILER__gestionTournoi_
 #############################################
 # Link the executable gestionTournoi.exe
 
-build gestionTournoi.exe: CXX_EXECUTABLE_LINKER__gestionTournoi_Debug CMakeFiles/gestionTournoi.dir/main.cpp.obj CMakeFiles/gestionTournoi.dir/Arbitre.cpp.obj CMakeFiles/gestionTournoi.dir/Equipe.cpp.obj CMakeFiles/gestionTournoi.dir/Terrain.cpp.obj CMakeFiles/gestionTournoi.dir/Match.cpp.obj
+build gestionTournoi.exe: CXX_EXECUTABLE_LINKER__gestionTournoi_Debug CMakeFiles/gestionTournoi.dir/main.cpp.obj CMakeFiles/gestionTournoi.dir/Arbitre.cpp.obj CMakeFiles/gestionTournoi.dir/Equipe.cpp.obj CMakeFiles/gestionTournoi.dir/Terrain.cpp.obj CMakeFiles/gestionTournoi.dir/Match.cpp.obj CMakeFiles/gestionTournoi.dir/Tournoi.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\gestionTournoi.dir

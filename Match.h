@@ -4,6 +4,8 @@
 #include "Terrain.h"
 #include "Equipe.h"
 #include "Arbitre.h"
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -20,33 +22,37 @@ private:
     int refMatch;
     Phase phase;
     vector<Equipe> equipes;
-    vector<Arbitre> arbitres;
+    Arbitre arbitre;
     int terrain;
     string nomTerrain;
+    int scoreEquipe1;
+    int scoreEquipe2;
+    bool matchTermine;
 
 public:
     Match();
     Match(int ref, Phase p);
 
-    // Getters & Setters
     int getRefMatch() const;
     void setRefMatch(int ref);
     Phase getPhase() const;
     void setPhase(Phase p);
     vector<Equipe> getEquipes() const;
     void ajouterEquipe(const Equipe& equipe);
-    vector<Arbitre> getArbitres() const;
-    void ajouterArbitre(const Arbitre& arbitre);
+    Arbitre getArbitre() const;
+    void setArbitre(const Arbitre& arbitre);
     int getTerrain() const;
     void setTerrain(int terrainId);
     string getTerrainNom() const;
-    void setTerrainNom(string NomTerrain);
+    void setTerrainNom(const string& nom);
+    bool estTermine() const;
+    void setTermine(bool termine);
 
-    // Méthodes spécifiques
-    void attributionMatchs();
-    void selectionEquipes();
-    bool verificationDisponibilite() const;
-
+    bool verifierDisponibilite() const;
+    void enregistrerScore(int score1, int score2);
+    void afficherMatch() const;
+    string getPhaseString() const;
+    bool peutCommencer() const;
 };
 
 #endif

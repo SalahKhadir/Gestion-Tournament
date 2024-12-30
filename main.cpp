@@ -1,33 +1,38 @@
-#include "Equipe.h"
-#include "Arbitre.h"
-#include "Terrain.h"
-#include "Match.h"
 #include "Tournoi.h"
 #include <iostream>
-#include <algorithm>
 #include <limits>
-#include <vector>
-#include <string>
 using namespace std;
 
-// Menus d'affichage
 void afficherMenuPrincipal() {
     cout << "\n====== GESTION DU TOURNOI DE FOOTBALL ======" << endl;
-    cout << "1. Gestion des equipes" << endl;
-    cout << "2. Gestion des arbitres" << endl;
-    cout << "3. Gestion des terrains" << endl;
-    cout << "4. Gestion des matchs" << endl;
-    cout << "5. Gestion des spectateurs et billets" << endl;
+    cout << "1. Création et configuration du tournoi" << endl;
+    cout << "2. Gestion des équipes" << endl;
+    cout << "3. Gestion des arbitres" << endl;
+    cout << "4. Gestion des terrains" << endl;
+    cout << "5. Gestion des matchs" << endl;
     cout << "6. Afficher le classement" << endl;
     cout << "0. Quitter" << endl;
     cout << "Choix: ";
 }
 
+void afficherMenuCreationTournoi() {
+    cout << "\n====== CREATION DU TOURNOI ======" << endl;
+    cout << "1. Configurer le tournoi" << endl;
+    cout << "2. Ajouter des équipes" << endl;
+    cout << "3. Ajouter des arbitres" << endl;
+    cout << "4. Ajouter des terrains" << endl;
+    cout << "5. Planifier les phases" << endl;
+    cout << "6. Afficher les informations du tournoi" << endl;
+    cout << "7. Commencer le tournoi" << endl;
+    cout << "0. Retour" << endl;
+    cout << "Choix: ";
+}
+
 void afficherMenuEquipe() {
-    cout << "\n====== GESTION DES EQUIPES ======" << endl;
-    cout << "1. Ajouter une equipe" << endl;
-    cout << "2. Afficher les equipes" << endl;
-    cout << "3. Rechercher une equipe" << endl;
+    cout << "\n====== GESTION DES ÉQUIPES ======" << endl;
+    cout << "1. Ajouter une équipe" << endl;
+    cout << "2. Afficher les équipes" << endl;
+    cout << "3. Rechercher une équipe" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
 }
@@ -36,7 +41,7 @@ void afficherMenuArbitre() {
     cout << "\n====== GESTION DES ARBITRES ======" << endl;
     cout << "1. Ajouter un arbitre" << endl;
     cout << "2. Afficher les arbitres" << endl;
-    cout << "3. Ajouter une decision arbitrale" << endl;
+    cout << "3. Ajouter une décision arbitrale" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
 }
@@ -52,24 +57,116 @@ void afficherMenuTerrain() {
 
 void afficherMenuMatch() {
     cout << "\n====== GESTION DES MATCHS ======" << endl;
-    cout << "1. Creer un match" << endl;
+    cout << "1. Créer un match" << endl;
     cout << "2. Afficher les matchs" << endl;
-    cout << "3. Enregistrer un resultat" << endl;
+    cout << "3. Enregistrer un résultat" << endl;
     cout << "0. Retour" << endl;
     cout << "Choix: ";
 }
 
-void afficherMenuTournoi() {
-    cout << "\n====== GESTION DES SPECTATEURS ET BILLETS ======" << endl;
-    cout << "1. Acheter un billet" << endl;
-    cout << "2. Afficher les billets d'un spectateur" << endl;
-    cout << "3. Verifier la disponibilite des places" << endl;
-    cout << "0. Retour" << endl;
-    cout << "Choix: ";
+void nettoyerBuffer() {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-// Fonctions de gestion
-void gererEquipes(vector<Equipe>& equipes) {
+void gererCreationTournoi(Tournoi& tournoi) {
+    int choix;
+    do {
+        afficherMenuCreationTournoi();
+        cin >> choix;
+        nettoyerBuffer();
+
+        switch (choix) {
+            case 1: {
+                string nom, date;
+                int nbEquipes;
+                cout << "Nom du tournoi: ";
+                getline(cin, nom);
+                cout << "Date du tournoi (JJ/MM/AAAA): ";
+                getline(cin, date);
+                cout << "Nombre d'équipes maximum: ";
+                cin >> nbEquipes;
+
+                if (tournoi.configurationInitiale(nom, date, nbEquipes)) {
+                    cout << "Configuration du tournoi réussie!" << endl;
+                }
+                break;
+            }
+            case 2: {
+                if (!tournoi.getNombreEquipesMax()) {
+                    cout << "Veuillez d'abord configurer le tournoi." << endl;
+                    break;
+                }
+                int id, nbJoueurs;
+                string nom, ville;
+                cout << "ID de l'équipe: ";
+                cin >> id;
+                nettoyerBuffer();
+                cout << "Nom de l'équipe: ";
+                getline(cin, nom);
+                cout << "Nombre de joueurs: ";
+                cin >> nbJoueurs;
+                nettoyerBuffer();
+                cout << "Ville: ";
+                getline(cin, ville);
+
+                tournoi.ajouterEquipe(Equipe(id, nom, nbJoueurs, ville));
+                break;
+            }
+            case 3: {
+                int code;
+                string nom;
+                cout << "Code de l'arbitre: ";
+                cin >> code;
+                nettoyerBuffer();
+                cout << "Nom de l'arbitre: ";
+                getline(cin, nom);
+
+                tournoi.ajouterArbitre(Arbitre(code, nom));
+                break;
+            }
+            case 4: {
+                int id, capacite;
+                string nom, ville, proprietaire;
+                cout << "ID du terrain: ";
+                cin >> id;
+                nettoyerBuffer();
+                cout << "Nom du terrain: ";
+                getline(cin, nom);
+                cout << "Ville: ";
+                getline(cin, ville);
+                cout << "Propriétaire: ";
+                getline(cin, proprietaire);
+                cout << "Capacité: ";
+                cin >> capacite;
+
+                tournoi.ajouterTerrain(Terrain(id, nom, ville, proprietaire, capacite));
+                break;
+            }
+            case 5: {
+                if (tournoi.peutCommencer()) {
+                    tournoi.planifierPhaseGroupe();
+                    tournoi.planifierPhaseEliminatoire();
+                    tournoi.genererCalendrier();
+                }
+                break;
+            }
+            case 6: {
+                tournoi.afficherInfoTournoi();
+                break;
+            }
+            case 7: {
+                if (tournoi.peutCommencer()) {
+                    tournoi.setEstCommence(true);
+                    cout << "Le tournoi commence!" << endl;
+                }
+                break;
+            }
+        }
+    } while (choix != 0);
+}
+
+void gererEquipes(Tournoi& tournoi) {
     int choix;
     do {
         afficherMenuEquipe();
@@ -78,49 +175,36 @@ void gererEquipes(vector<Equipe>& equipes) {
             case 1: {
                 int id, nbJoueurs;
                 string nom, ville;
-                cout << "ID de l'equipe: ";
+                cout << "ID de l'équipe: ";
                 cin >> id;
-                cout << "Nom de l'equipe: ";
-                cin.ignore();
+                nettoyerBuffer();
+                cout << "Nom de l'équipe: ";
                 getline(cin, nom);
                 cout << "Nombre de joueurs: ";
                 cin >> nbJoueurs;
+                nettoyerBuffer();
                 cout << "Ville: ";
-                cin.ignore();
                 getline(cin, ville);
-                equipes.emplace_back(id, nom, nbJoueurs, ville);
-                cout << "equipe ajoutee avec succes!" << endl;
+
+                tournoi.ajouterEquipe(Equipe(id, nom, nbJoueurs, ville));
                 break;
             }
-            case 2: {
-                if (equipes.empty()) {
-                    cout << "Aucune equipe enregistree." << endl;
-                } else {
-                    for (const auto& equipe : equipes) {
-                        equipe.consultationEquipe();
-                        cout << "------------------------" << endl;
-                    }
-                }
+            case 2:
+                tournoi.afficherEquipes();
                 break;
-            }
             case 3: {
                 string critere, valeur;
                 cout << "Rechercher par (id/nom/ville/score/classement): ";
                 cin >> critere;
-                cout << "Entrez la valeur du critere: ";
-                cin.ignore();
+                cout << "Valeur: ";
+                nettoyerBuffer();
                 getline(cin, valeur);
 
-                bool found = false;
-                for (auto& equipe : equipes) {
-                    if (!equipe.rechercheEquipe(critere, valeur).getNomEquipe().empty()) {
-                        found = true;
-                    }
-                    cout << "------------------------" << endl;
-                }
-
-                if (!found) {
-                    cout << "Aucune equipe trouvee avec ce critere." << endl;
+                Equipe* equipe = tournoi.rechercherEquipe(critere, valeur);
+                if (equipe) {
+                    equipe->consultationEquipe();
+                } else {
+                    cout << "Aucune équipe trouvée." << endl;
                 }
                 break;
             }
@@ -128,367 +212,165 @@ void gererEquipes(vector<Equipe>& equipes) {
     } while (choix != 0);
 }
 
-void gererArbitres(vector<Arbitre>& arbitres) {
+void gererArbitres(Tournoi& tournoi) {
     int choix;
     do {
         afficherMenuArbitre();
         cin >> choix;
-
-        // Verifie si une erreur s'est produite lors de la saisie
-        if (cin.fail()) {
-            cin.clear(); // Reinitialise le flux en cas d'erreur
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore les caracteres restants
-            cout << "Entree invalide. Veuillez reessayer." << endl;
-            continue; // Retourne au debut de la boucle
-        }
-
         switch (choix) {
             case 1: {
                 int code;
                 string nom;
                 cout << "Code de l'arbitre: ";
                 cin >> code;
-
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
+                nettoyerBuffer();
                 cout << "Nom de l'arbitre: ";
                 getline(cin, nom);
-                arbitres.emplace_back(code, nom);
-                cout << "Arbitre ajoute avec succes!" << endl;
+
+                tournoi.ajouterArbitre(Arbitre(code, nom));
                 break;
             }
-            case 2: { // Afficher les arbitres
-                if (arbitres.empty()) {
-                    cout << "Aucun arbitre enregistre." << endl;
-                } else {
-                    for (const auto& arbitre : arbitres) {
-                        arbitre.afficherArbitre();
-                        cout << "------------------------" << endl;
-                    }
-                }
+            case 2:
+                tournoi.afficherArbitres();
                 break;
-            }
-            case 3: { // Ajouter une decision arbitrale
+            case 3: {
                 int code;
                 string decision;
-                cout << "Code de l'arbitre (pour ajouter une decision): ";
+                cout << "Code de l'arbitre: ";
                 cin >> code;
+                nettoyerBuffer();
+                cout << "Décision: ";
+                getline(cin, decision);
 
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-                auto it = find_if(arbitres.begin(), arbitres.end(), [code](const Arbitre& arb) {
-                    return arb.getCodeArbitre() == code;
-                });
-
-                if (it != arbitres.end()) {
-                    cout << "Entrez la decision: ";
-                    getline(cin, decision); // Lecture de la decision
-                    it->ajouterDecision(decision);
-                    cout << "Decision ajoutee avec succes!" << endl;
-                } else {
-                    cout << "Arbitre introuvable." << endl;
-                }
+                tournoi.ajouterDecisionArbitrale(code, decision);
                 break;
             }
-            case 0: // Retour
-                cout << "Retour au menu principal." << endl;
-                break;
-            default:
-                cout << "Choix invalide. Veuillez reessayer." << endl;
         }
     } while (choix != 0);
 }
 
-
-void gererTerrains(vector<Terrain>& terrains) {
+void gererTerrains(Tournoi& tournoi) {
     int choix;
     do {
         afficherMenuTerrain();
         cin >> choix;
-
-        // Verifie si une erreur s'est produite lors de la saisie
-        if (cin.fail()) {
-            cin.clear(); // Reinitialise le flux en cas d'erreur
-            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignore les caracteres restants
-            cout << "Entree invalide. Veuillez reessayer." << endl;
-            continue; // Retourne au debut de la boucle
-        }
-
         switch (choix) {
-            case 1: { // Ajouter un terrain
+            case 1: {
                 int id, capacite;
                 string nom, ville, proprietaire;
-
                 cout << "ID du terrain: ";
                 cin >> id;
-
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
+                nettoyerBuffer();
                 cout << "Nom du terrain: ";
                 getline(cin, nom);
-
                 cout << "Ville: ";
                 getline(cin, ville);
-
-                cout << "Proprietaire (equipe): ";
+                cout << "Propriétaire: ";
                 getline(cin, proprietaire);
-
-                cout << "Capacite du terrain: ";
+                cout << "Capacité: ";
                 cin >> capacite;
 
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
-                terrains.emplace_back(id, nom, ville, proprietaire, capacite);
-                cout << "Terrain ajoute avec succes!" << endl;
+                tournoi.ajouterTerrain(Terrain(id, nom, ville, proprietaire, capacite));
                 break;
             }
-            case 2: { // Afficher les terrains
-                if (terrains.empty()) {
-                    cout << "Aucun terrain enregistre." << endl;
-                } else {
-                    for (const auto& terrain : terrains) {
-                        terrain.AfficherTerrain();
-                        cout << "------------------------" << endl;
-                    }
-                }
+            case 2:
+                tournoi.afficherTerrains();
                 break;
-            }
-            case 3: { // Rechercher un terrain
+            case 3: {
                 string critere, valeur;
-                cout << "Rechercher par (id/nom/ville/proprietaire/capacite): ";
+                cout << "Rechercher par (id/nom/ville/proprietaire): ";
                 cin >> critere;
-
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Nettoyer le flux
-                cout << "Entrez la valeur du critere: ";
+                nettoyerBuffer();
+                cout << "Valeur: ";
                 getline(cin, valeur);
 
-                bool found = false;
-
-                for (const auto& terrain : terrains) {
-                    if ((critere == "id" && to_string(terrain.getIdTerrain()) == valeur) ||
-                        (critere == "nom" && terrain.getNomTerrain() == valeur) ||
-                        (critere == "ville" && terrain.getVilleTerrain() == valeur) ||
-                        (critere == "proprietaire" && terrain.getEquipePropritere() == valeur) ||
-                        (critere == "capacite" && to_string(terrain.getCapaciteTerrain()) == valeur)) {
-                        terrain.AfficherTerrain();
-                        found = true; // Indique qu'au moins un terrain a ete trouve
-                        }
-                    cout << "------------------------" << endl;
-                }
-
-                if (!found) {
-                    cout << "Aucun terrain trouve avec ce critere." << endl;
+                Terrain* terrain = tournoi.rechercherTerrain(critere, valeur);
+                if (terrain) {
+                    terrain->AfficherTerrain();
+                } else {
+                    cout << "Aucun terrain trouvé." << endl;
                 }
                 break;
             }
-            case 0: // Retour
-                cout << "Retour au menu principal." << endl;
-                break;
-            default:
-                cout << "Choix invalide. Veuillez reessayer." << endl;
         }
     } while (choix != 0);
 }
 
-
-void gererMatchs(vector<Match>& matchs, vector<Equipe>& equipes,
-                 vector<Arbitre>& arbitres, vector<Terrain>& terrains) {
+void gererMatchs(Tournoi& tournoi) {
     int choix;
     do {
         afficherMenuMatch();
         cin >> choix;
-
         switch (choix) {
-        case 1: { // Creer un match
-            cout << "\nCreation d'un nouveau match...\n";
-            Match match;
-            int ref, phaseInput;
-
-            // Reference du match
-            cout << "Reference du match: ";
-            cin >> ref;
-            match.setRefMatch(ref);
-
-            // Phase du match
-            cout << "Phase du match :\n";
-            cout << "0. PHASE_GROUPES\n1. ELIMINATOIRES\n2. QUARTS_FINALE\n3. DEMI_FINALE\n4. FINALE\n";
-            cout << "Entrez le numero correspondant : ";
-            cin >> phaseInput;
-            if (phaseInput < 0 || phaseInput > 4) {
-                cout << "Phase invalide. Annulation de la creation du match.\n";
-                break;
-            }
-            match.setPhase(static_cast<Phase>(phaseInput));
-
-            // Selectionner les equipes
-            if (equipes.size() < 2) {
-                cout << "Nombre insuffisant d'equipes pour organiser un match.\n";
-                break;
-            }
-            cout << "Selection des equipes...\n";
-            for (size_t i = 0; i < equipes.size(); ++i) {
-                cout << i + 1 << ". " << equipes[i].getNomEquipe() << endl;
-            }
-            int equipe1Idx, equipe2Idx;
-            cout << "Choisissez l'indice de la premiere equipe: ";
-            cin >> equipe1Idx;
-            cout << "Choisissez l'indice de la deuxieme equipe: ";
-            cin >> equipe2Idx;
-
-            if (equipe1Idx < 1 || equipe1Idx > equipes.size() ||
-                equipe2Idx < 1 || equipe2Idx > equipes.size() ||
-                equipe1Idx == equipe2Idx) {
-                cout << "Indices d'equipes invalides. Annulation de la creation du match.\n";
-                break;
-            }
-
-            match.ajouterEquipe(equipes[equipe1Idx - 1]);
-            match.ajouterEquipe(equipes[equipe2Idx - 1]);
-
-            // Selectionner le terrain
-            if (terrains.empty()) {
-                cout << "Aucun terrain disponible.\n";
-                break;
-            }
-            cout << "Selection d'un terrain...\n";
-            for (size_t i = 0; i < terrains.size(); ++i) {
-                cout << i + 1 << ". " << terrains[i].getNomTerrain()
-                     << " (" << terrains[i].getVilleTerrain() << ")" << endl;
-            }
-            int terrainIdx;
-            cout << "Choisissez l'indice du terrain: ";
-            cin >> terrainIdx;
-
-            if (terrainIdx < 1 || terrainIdx > terrains.size()) {
-                cout << "Indice de terrain invalide. Annulation de la creation du match.\n";
-                break;
-            }
-
-            match.setTerrain(terrains[terrainIdx - 1].getIdTerrain());
-            match.setTerrainNom(terrains[terrainIdx - 1].getNomTerrain());
-
-            // Selectionner les arbitres
-            if (arbitres.size() < 2) {
-                cout << "Nombre insuffisant d'arbitres disponibles.\n";
-                break;
-            }
-            cout << "Selection des arbitres...\n";
-            for (size_t i = 0; i < arbitres.size(); ++i) {
-                cout << i + 1 << ". " << arbitres[i].getNomArbitre() << endl;
-            }
-            int arbitre1Idx, arbitre2Idx;
-            cout << "Choisissez l'indice du premier arbitre: ";
-            cin >> arbitre1Idx;
-            cout << "Choisissez l'indice du deuxieme arbitre: ";
-            cin >> arbitre2Idx;
-
-            if (arbitre1Idx < 1 || arbitre1Idx > arbitres.size() ||
-                arbitre2Idx < 1 || arbitre2Idx > arbitres.size() ||
-                arbitre1Idx == arbitre2Idx) {
-                cout << "Indices d'arbitres invalides. Annulation de la creation du match.\n";
-                break;
-            }
-
-            match.ajouterArbitre(arbitres[arbitre1Idx - 1]);
-            match.ajouterArbitre(arbitres[arbitre2Idx - 1]);
-
-            // Ajouter le match à la liste des matchs
-            matchs.push_back(match);
-            cout << "Match cre avec succes !\n";
-            break;
-        }
-        case 2: { // Afficher les matchs
-            cout << "\nListe des matchs:\n";
-            if (matchs.empty()) {
-                cout << "Aucun match à afficher.\n";
-                break;
-            }
-            for (const auto& match : matchs) {
-                cout << "Reference: " << match.getRefMatch()
-                     << ", Phase: ";
-                switch (match.getPhase()) {
-                    case PHASE_GROUPES:
-                        cout << "Phase de Groupes";
-                    break;
-                    case ELIMINATOIRES:
-                        cout << "eliminatoires";
-                    break;
-                    case QUARTS_FINALE:
-                        cout << "Quarts de Finale";
-                    break;
-                    case DEMI_FINALE:
-                        cout << "Demi-Finale";
-                    break;
-                    case FINALE:
-                        cout << "Finale";
-                    break;
-                    default:
-                        cout << "Phase inconnue";
-                    break;
+            case 1: {
+                int phaseInt;
+                cout << "\nPhase du match (0: Groupes, 1: Éliminatoires, "
+                     << "2: Quarts, 3: Demi, 4: Finale): ";
+                cin >> phaseInt;
+                if (phaseInt >= 0 && phaseInt <= 4) {
+                    tournoi.creerMatch(static_cast<Phase>(phaseInt));
+                } else {
+                    cout << "Phase invalide!" << endl;
                 }
-                     cout << ", equipes: ";
-                for (const auto& equipe : match.getEquipes()) {
-                    cout << equipe.getNomEquipe() << " x ";
-                }
-                cout << ", Terrain: " << match.getTerrainNom() << endl;
+                break;
             }
-            break;
-        }
-        default:
-            if (choix != 0) {
-                cout << "Choix invalide. Reessayez.\n";
+            case 2:
+                tournoi.afficherMatchs();
+                break;
+            case 3: {
+                int refMatch, score1, score2;
+                cout << "Référence du match: ";
+                cin >> refMatch;
+                cout << "Score équipe 1: ";
+                cin >> score1;
+                cout << "Score équipe 2: ";
+                cin >> score2;
+
+                tournoi.enregistrerResultatMatch(refMatch, score1, score2);
+                break;
             }
         }
     } while (choix != 0);
-}
-
-
-void gererTournois(vector<Match>& matchs) {
-    int choix;
-    do {
-        afficherMenuTournoi();
-        cin >> choix;
-        // Implementation de la gestion des spectateurs et billets
-    } while (choix != 0);
-}
-
-void afficherClassement(const vector<Equipe>& equipes) {
-    cout << "\n====== CLASSEMENT DES eQUIPES ======" << endl;
-    // Implementation de l'affichage du classement
 }
 
 int main() {
-    // Declaration des vecteurs pour stocker les donnees
-    vector<Equipe> equipes;
-    vector<Arbitre> arbitres;
-    vector<Terrain> terrains;
-    vector<Match> matchs;
-
+    Tournoi tournoi;
     int choix;
+
     do {
         afficherMenuPrincipal();
-        cin >> choix;
+        if (!(cin >> choix)) {
+            nettoyerBuffer();
+            cout << "Entrée invalide. Veuillez entrer un numéro." << endl;
+            continue;
+        }
 
         switch (choix) {
             case 1:
-                gererEquipes(equipes);
-                break;
+                gererCreationTournoi(tournoi);
+            break;
             case 2:
-                gererArbitres(arbitres);
-                break;
+                gererEquipes(tournoi);
+            break;
             case 3:
-                gererTerrains(terrains);
-                break;
+                gererArbitres(tournoi);
+            break;
             case 4:
-                gererMatchs(matchs, equipes, arbitres, terrains);
-                break;
+                gererTerrains(tournoi);
+            break;
             case 5:
-                gererTournois(matchs);
-                break;
+                    if (!tournoi.getEstCommence()) {
+                        cout << "Le tournoi n'a pas encore commencé. Veuillez le démarrer depuis le menu de création." << endl;
+                    } else {
+                        gererMatchs(tournoi);
+                    }
+            break;
             case 6:
-                afficherClassement(equipes);
-                break;
+                tournoi.afficherClassement();
+            break;
             case 0:
                 cout << "Au revoir!" << endl;
-                break;
+            break;
             default:
                 cout << "Option invalide!" << endl;
         }
