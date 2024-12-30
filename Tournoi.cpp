@@ -338,35 +338,57 @@ void Tournoi::afficherClassement() const {
 void Tournoi::planifierPhaseGroupe() {
     if (!peutCommencer()) return;
 
-    cout << "\n=== Planification de la phase de groupes ===" << endl;
-
-    for (size_t i = 0; i < equipes.size(); i++) {
-        for (size_t j = i + 1; j < equipes.size(); j++) {
-            Match* match = new Match(matchs.size() + 1, PHASE_GROUPES);
-            match->ajouterEquipe(equipes[i]);
-            match->ajouterEquipe(equipes[j]);
-
-            // Assigner l'arbitre
-            match->setArbitre(arbitres[0]);
-
-            // Assigner un terrain aléatoirement
-            int terrainIndex = rand() % terrains.size();
-            match->setTerrain(terrains[terrainIndex].getIdTerrain());
-            match->setTerrainNom(terrains[terrainIndex].getNomTerrain());
-
-            matchs.push_back(match);
-
-            // Afficher le match créé
-            cout << "Match " << matchs.size() << " : "
-                 << equipes[i].getNomEquipe() << " vs "
-                 << equipes[j].getNomEquipe() << endl;
-            cout << "Terrain: " << terrains[terrainIndex].getNomTerrain() << endl;
-            cout << "Arbitre: " << arbitres[0].getNomArbitre() << endl;
-            cout << "------------------------" << endl;
-        }
+    // Si moins de 8 équipes, on passe directement aux éliminatoires
+    if (equipes.size() < 8) {
+        cout << "\nMoins de 8 équipes: Passage direct à la phase éliminatoire" << endl;
+        planifierPhaseEliminatoire();
+        return;
     }
 
-    cout << "Phase de groupes planifiée avec " << matchs.size() << " matchs." << endl;
+    cout << "\n=== Planification de la phase de groupes ===" << endl;
+
+    // Nombre d'équipes par groupe (4 équipes)
+    int equipesParGroupe = 4;
+    int nombreGroupes = equipes.size() / equipesParGroupe;
+
+    // Création des groupes
+    vector<vector<Equipe>> groupes;
+    for (int i = 0; i < nombreGroupes; i++) {
+        vector<Equipe> groupe;
+        for (int j = 0; j < equipesParGroupe; j++) {
+            groupe.push_back(equipes[i * equipesParGroupe + j]);
+        }
+        groupes.push_back(groupe);
+    }
+
+    // Afficher les groupes
+    for (int i = 0; i < groupes.size(); i++) {
+        cout << "\nGroupe " << (char)('A' + i) << ":" << endl;
+        for (const auto& equipe : groupes[i]) {
+            cout << "- " << equipe.getNomEquipe() << endl;
+        }
+
+        // Créer les matchs pour ce groupe
+        for (size_t j = 0; j < groupes[i].size(); j++) {
+            for (size_t k = j + 1; k < groupes[i].size(); k++) {
+                Match* match = new Match(matchs.size() + 1, PHASE_GROUPES);
+                match->ajouterEquipe(groupes[i][j]);
+                match->ajouterEquipe(groupes[i][k]);
+                match->setArbitre(arbitres[0]);
+
+                // Assigner un terrain aléatoirement
+                int terrainIndex = rand() % terrains.size();
+                match->setTerrain(terrains[terrainIndex].getIdTerrain());
+                match->setTerrainNom(terrains[terrainIndex].getNomTerrain());
+
+                matchs.push_back(match);
+
+                cout << "Match " << match->getRefMatch() << ": "
+                     << groupes[i][j].getNomEquipe() << " vs "
+                     << groupes[i][k].getNomEquipe() << endl;
+            }
+        }
+    }
 }
 
 void Tournoi::planifierPhaseEliminatoire() {
@@ -374,41 +396,59 @@ void Tournoi::planifierPhaseEliminatoire() {
 
     cout << "\n=== Planification de la phase éliminatoire ===" << endl;
 
-    // Trier les équipes par score
-    vector<Equipe> equipesQualifiees = equipes;
-    sort(equipesQualifiees.begin(), equipesQualifiees.end(),
-         [](const Equipe& a, const Equipe& b) {
-             return a.getScore() > b.getScore();
-         });
+    vector<Equipe> equipesQualifiees;
 
-    // Prendre les 8 meilleures équipes pour les quarts de finale
-    int nbEquipesQualifiees = min(8, (int)equipesQualifiees.size());
-    cout << "\n=== Quarts de finale ===" << endl;
-    for (int i = 0; i < nbEquipesQualifiees; i += 2) {
-        Match* match = new Match(matchs.size() + 1, QUARTS_FINALE);
+    if (equipes.size() < 8) {
+        // Si moins de 8 équipes, toutes passent directement en phase éliminatoire
+        equipesQualifiees = equipes;
+    } else {
+        // Sinon, prendre les 2 premiers de chaque groupe
+        // Trier les équipes par score dans chaque groupe
+        int equipesParGroupe = 4;
+        int nombreGroupes = equipes.size() / equipesParGroupe;
+
+        for (int i = 0; i < nombreGroupes; i++) {
+            vector<Equipe> groupe(equipes.begin() + i * equipesParGroupe,
+                                equipes.begin() + (i + 1) * equipesParGroupe);
+
+            sort(groupe.begin(), groupe.end(),
+                 [](const Equipe& a, const Equipe& b) {
+                     return a.getScore() > b.getScore();
+                 });
+
+            // Prendre les 2 premiers du groupe
+            equipesQualifiees.push_back(groupe[0]);
+            equipesQualifiees.push_back(groupe[1]);
+        }
+    }
+
+    cout << "\nÉquipes qualifiées pour la phase éliminatoire:" << endl;
+    for (const auto& equipe : equipesQualifiees) {
+        cout << "- " << equipe.getNomEquipe() << " (" << equipe.getScore() << " points)" << endl;
+    }
+
+    // Créer les matchs éliminatoires
+    for (size_t i = 0; i < equipesQualifiees.size(); i += 2) {
+        if (i + 1 >= equipesQualifiees.size()) break;
+
+        Match* match = new Match(matchs.size() + 1, ELIMINATOIRES);
         match->ajouterEquipe(equipesQualifiees[i]);
         match->ajouterEquipe(equipesQualifiees[i + 1]);
-
-        // Assigner l'arbitre
         match->setArbitre(arbitres[0]);
 
-        // Assigner un terrain aléatoirement
         int terrainIndex = rand() % terrains.size();
         match->setTerrain(terrains[terrainIndex].getIdTerrain());
         match->setTerrainNom(terrains[terrainIndex].getNomTerrain());
 
         matchs.push_back(match);
 
-        // Afficher le match créé
-        cout << "Match " << matchs.size() << " : "
-             << equipesQualifiees[i].getNomEquipe() << " vs "
+        cout << "\nMatch éliminatoire " << match->getRefMatch() << ":" << endl;
+        cout << equipesQualifiees[i].getNomEquipe() << " vs "
              << equipesQualifiees[i + 1].getNomEquipe() << endl;
         cout << "Terrain: " << terrains[terrainIndex].getNomTerrain() << endl;
-        cout << "Arbitre: " << arbitres[0].getNomArbitre() << endl;
         cout << "------------------------" << endl;
     }
 }
-
 void Tournoi::genererCalendrier() {
     if (!peutCommencer()) return;
 
