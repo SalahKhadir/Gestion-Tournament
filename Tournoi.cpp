@@ -311,6 +311,14 @@ void Tournoi::mettreAJourClassement() {
     }
 }
 
+Match* Tournoi::rechercherMatch(int refMatch) {
+    for (auto& match : matchs) {
+        if (match->getRefMatch() == refMatch) {
+            return match;
+        }
+    }
+    return nullptr;
+}
 void Tournoi::afficherClassement() const {
     if (equipes.empty()) {
         cout << "Aucune équipe inscrite." << endl;
