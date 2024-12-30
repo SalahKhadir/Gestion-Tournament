@@ -2,9 +2,7 @@
 #include "Arbitre.h"
 #include "Terrain.h"
 #include "Match.h"
-#include "Zone.h"
-#include "Billet.h"
-#include "Spectateur.h"
+#include "Tournoi.h"
 #include <iostream>
 #include <algorithm>
 #include <limits>
@@ -61,7 +59,7 @@ void afficherMenuMatch() {
     cout << "Choix: ";
 }
 
-void afficherMenuSpectateur() {
+void afficherMenuTournoi() {
     cout << "\n====== GESTION DES SPECTATEURS ET BILLETS ======" << endl;
     cout << "1. Acheter un billet" << endl;
     cout << "2. Afficher les billets d'un spectateur" << endl;
@@ -443,11 +441,10 @@ void gererMatchs(vector<Match>& matchs, vector<Equipe>& equipes,
 }
 
 
-void gererSpectateurs(vector<Spectateur>& spectateurs, vector<Match>& matchs,
-                     vector<Zone>& zones) {
+void gererTournois(vector<Match>& matchs) {
     int choix;
     do {
-        afficherMenuSpectateur();
+        afficherMenuTournoi();
         cin >> choix;
         // Implémentation de la gestion des spectateurs et billets
     } while (choix != 0);
@@ -464,8 +461,6 @@ int main() {
     vector<Arbitre> arbitres;
     vector<Terrain> terrains;
     vector<Match> matchs;
-    vector<Spectateur> spectateurs;
-    vector<Zone> zones;
 
     int choix;
     do {
@@ -486,7 +481,7 @@ int main() {
                 gererMatchs(matchs, equipes, arbitres, terrains);
                 break;
             case 5:
-                gererSpectateurs(spectateurs, matchs, zones);
+                gererTournois(matchs);
                 break;
             case 6:
                 afficherClassement(equipes);

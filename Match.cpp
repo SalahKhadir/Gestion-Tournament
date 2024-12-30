@@ -19,6 +19,7 @@ void Match::setTerrainNom(string NomTerrain) {nomTerrain = NomTerrain;}
 vector<Spectateur> Match::getSpectateurs() const { return spectateurs; }
 void Match::ajouterSpectateur(const Spectateur& spectateur) { spectateurs.push_back(spectateur); }
 
+
 void Match::attributionMatchs() {
     // Implémentation de l'attribution des matchs
 }
