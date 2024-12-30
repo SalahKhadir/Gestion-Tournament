@@ -16,8 +16,6 @@ int Match::getTerrain() const { return terrain; }
 void Match::setTerrain(int terrainId) { terrain = terrainId; }
 string Match::getTerrainNom() const {return nomTerrain;}
 void Match::setTerrainNom(string NomTerrain) {nomTerrain = NomTerrain;}
-vector<Spectateur> Match::getSpectateurs() const { return spectateurs; }
-void Match::ajouterSpectateur(const Spectateur& spectateur) { spectateurs.push_back(spectateur); }
 
 
 void Match::attributionMatchs() {

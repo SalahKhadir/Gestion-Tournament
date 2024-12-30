@@ -4,7 +4,6 @@
 #include "Terrain.h"
 #include "Equipe.h"
 #include "Arbitre.h"
-#include "Spectateur.h"
 
 using namespace std;
 
@@ -24,7 +23,6 @@ private:
     vector<Arbitre> arbitres;
     int terrain;
     string nomTerrain;
-    vector<Spectateur> spectateurs;
 
 public:
     Match();
@@ -43,8 +41,6 @@ public:
     void setTerrain(int terrainId);
     string getTerrainNom() const;
     void setTerrainNom(string NomTerrain);
-    vector<Spectateur> getSpectateurs() const;
-    void ajouterSpectateur(const Spectateur& spectateur);
 
     // Méthodes spécifiques
     void attributionMatchs();

@@ -9,7 +9,5 @@ add_executable(gestionTournoi main.cpp
         Equipe.h
         Equipe.cpp
         Terrain.cpp
-        Billet.cpp
         Match.cpp
-        Spectateur.cpp
-        Zone.cpp)
+        )
